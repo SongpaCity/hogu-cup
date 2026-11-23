@@ -819,7 +819,9 @@
   bgm.volume = 0.45;
   let trackIdx = 0;          // 현재 곡 인덱스
   let muted = false;         // 음소거
-  let wantPlay = true;       // 재생 의도(자동재생 차단 대비)
+  // 사운드 기본값 OFF + 켬/끔 상태 기기에 기억(재방문 시 유지)
+  let wantPlay = localStorage.getItem('hogucup_bgm') === 'on';
+  function saveBgmPref(on){ localStorage.setItem('hogucup_bgm', on ? 'on' : 'off'); }
   let sessionTracks = [];    // 큰 파일 업로드 → 이 기기에서만 임시 재생(공유X)
 
   function playlist(){
@@ -850,14 +852,15 @@
   // 곡 종료 → 다음 곡 자동
   bgm.addEventListener('ended', () => loadTrack(trackIdx + 1, true));
   // 컨트롤
-  $('jbPrev').onclick = (e)=>{ e.stopPropagation(); wantPlay = true; loadTrack(trackIdx - 1, true); };
-  $('jbNext').onclick = (e)=>{ e.stopPropagation(); wantPlay = true; loadTrack(trackIdx + 1, true); };
+  $('jbPrev').onclick = (e)=>{ e.stopPropagation(); wantPlay = true; saveBgmPref(true); loadTrack(trackIdx - 1, true); };
+  $('jbNext').onclick = (e)=>{ e.stopPropagation(); wantPlay = true; saveBgmPref(true); loadTrack(trackIdx + 1, true); };
   $('jbPlay').onclick = (e)=>{ e.stopPropagation();
-    if (bgm.paused) { wantPlay = true; muted = false; tryPlay(); }
-    else { wantPlay = false; bgm.pause(); renderJukebox(); }
+    if (bgm.paused) { wantPlay = true; muted = false; bgm.muted = false; saveBgmPref(true); tryPlay(); }
+    else { wantPlay = false; saveBgmPref(false); bgm.pause(); renderJukebox(); }
   };
   bgmBtn.onclick = (e)=>{ e.stopPropagation();
     muted = !muted; bgm.muted = muted;
+    saveBgmPref(!muted && wantPlay);
     if (!muted && bgm.paused && wantPlay) tryPlay(); else renderJukebox();
   };
   // 자동재생 차단 대비: 첫 상호작용 때 재생
@@ -920,7 +923,7 @@
   // ---------- 시작 ----------
   const savedNick = localStorage.getItem('hogucup_nick'); if (savedNick) $('cmtName').value = savedNick;
   renderAll();
-  loadTrack(0, true);   // 첫 곡 로드 + 자동재생 시도(차단 시 첫 상호작용/▶로 재생)
+  loadTrack(0, wantPlay);   // 기억된 상태가 ON일 때만 자동재생 시도(기본 OFF)
   let lastBefore = isBeforeEvent();
   setInterval(()=>{
     renderClock();
