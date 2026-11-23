@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>호구컵 — 호구들의 월드컵</title>
+  <meta property="og:title" content="호구컵 — 호구들의 월드컵" />
+  <meta property="og:description" content="호구들의 월드컵. 누가 진짜 호구인가?" />
+  <style>
+    :root { --bg:#0f1115; --card:#171a21; --text:#e6e8ec; --muted:#9aa3af; --accent:#f5c542; --border:#272b33; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; background: radial-gradient(1200px 600px at 50% -10%, #1b2030, var(--bg));
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; text-align: center; padding: 24px; -webkit-text-size-adjust: 100%;
+    }
+    .badge { font-size: .8rem; color: var(--accent); letter-spacing: .08em; font-weight: 700; margin-bottom: 10px; }
+    h1 { font-size: 2.1rem; margin: 0 0 8px; letter-spacing: -.02em; }
+    .sub { color: var(--muted); max-width: 30rem; line-height: 1.6; margin: 0 0 26px; }
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 22px 24px; max-width: 32rem; width: 100%;
+    }
+    .vs { display: flex; align-items: center; gap: 14px; justify-content: center; margin: 6px 0 2px; }
+    .pick {
+      flex: 1; background: #0f1115; border: 1px solid var(--border); border-radius: 12px;
+      padding: 28px 10px; font-size: 1.1rem; font-weight: 700; color: var(--text);
+    }
+    .vs .mid { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
+    .note { color: var(--muted); font-size: .85rem; margin-top: 18px; line-height: 1.6; }
+    .foot { color: #5b6473; font-size: .76rem; margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <div class="badge">HOGU CUP</div>
+  <h1>🏆 호구들의 월드컵</h1>
+  <p class="sub">누가 진짜 호구인가? 둘 중 더 호구를 골라 끝까지 살아남는 최종 호구를 가린다.</p>
+
+  <div class="card">
+    <div class="vs">
+      <div class="pick">？</div>
+      <div class="mid">VS</div>
+      <div class="pick">？</div>
+    </div>
+    <p class="note">🚧 준비 중입니다. 곧 토너먼트가 열립니다.</p>
+  </div>
+
+  <p class="foot">hogu-cup · GitHub Pages</p>
+</body>
+</html>
