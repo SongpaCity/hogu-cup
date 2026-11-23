@@ -36,6 +36,16 @@
 
     h2.sec { font-size: 1.15rem; margin: 30px 0 12px; padding-left: 10px; border-left: 4px solid var(--gold); }
 
+    /* 디펜딩 챔피언 (지난 대회 우승자) */
+    #defenderBox { max-width: 440px; margin: 0 auto 16px; }
+    #defenderBox .dlabel { text-align: center; color: var(--gold); font-size: .78rem; letter-spacing: .06em; margin-bottom: 6px; font-weight: 700; }
+    #defenderBox .frame { position: relative; }
+    #defenderBox .frame img { width: 100%; display: block; filter: drop-shadow(0 8px 22px rgba(0,0,0,.55)); }
+    #defenderBox .name { position: absolute; left: 50%; top: 45%; transform: translate(-50%, -50%); width: 62%; text-align: center; }
+    #defenderBox .name .nm { font-size: clamp(1.1rem, 5.5vw, 1.8rem); font-weight: 800; color: #fff; letter-spacing: .02em; text-shadow: 0 1px 2px #000, 0 0 12px rgba(244,196,48,.55); line-height: 1.1; }
+    #defenderBox .name .disc { font-size: .72rem; color: var(--gold); margin-top: 3px; }
+    #defenderBox .name .tbd { color: #cdd3dd; }
+
     /* 스코어보드 */
     .score { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
     .score .row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--border); }
@@ -120,6 +130,7 @@
 
     <!-- 실시간 스코어보드 -->
     <h2 class="sec">🔥 실시간 스코어보드</h2>
+    <div id="defenderBox"></div>
     <div class="score" id="scoreBox"></div>
 
     <!-- 참가자 명단 -->
@@ -224,6 +235,22 @@
     $('dd').textContent=pad(days); $('hh').textContent=pad(hrs); $('mm').textContent=pad(min); $('ss').textContent=pad(sec);
   }
 
+  function renderDefender(){
+    const prevRound = Number(state.edition) - 1;
+    const prev = (state.champions||[]).find(c => Number(c.round) === prevRound);
+    const name = prev ? prev.name : '미정';
+    const disc = prev && prev.discipline ? prev.discipline : '';
+    $('defenderBox').innerHTML = `
+      <div class="dlabel">👑 지난 대회(제 ${prevRound}회) 우승자</div>
+      <div class="frame">
+        <img src="champ-frame.png" alt="디펜딩 챔피언 프레임">
+        <div class="name">
+          <div class="nm ${prev ? '' : 'tbd'}">${name}</div>
+          ${disc ? `<div class="disc">${disc}</div>` : ''}
+        </div>
+      </div>`;
+  }
+
   function renderScore(){
     const list = state.participants.map(p => ({ name:p.name, no:p.no, score: Number(state.scores?.[p.name]||0) }))
       .sort((a,b)=> b.score-a.score);
@@ -273,7 +300,7 @@
     $('aClist').querySelectorAll('[data-rc]').forEach(b=> b.onclick=()=>{ state.champions.splice(+b.dataset.rc,1); renderAll(); save(); });
   }
 
-  function renderAll(){ renderClock(); renderScore(); renderPlayers(); renderChamps(); renderAdmin(); }
+  function renderAll(){ renderClock(); renderDefender(); renderScore(); renderPlayers(); renderChamps(); renderAdmin(); }
 
   // ---------- 관리자 토글 ----------
   $('adminToggle').onclick = ()=>{
