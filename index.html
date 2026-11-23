@@ -21,15 +21,44 @@
     }
     * { box-sizing: border-box; }
     body {
-      margin: 0; color: var(--ink);
+      margin: 0; color: var(--ink); overflow: hidden;
       font-family: "Jua", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
       -webkit-text-size-adjust: 100%;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,.12) 30%, rgba(233,215,255,.3)),
-        url('assets/bg-maple.png') center top / cover fixed,
-        linear-gradient(180deg, var(--sky1), var(--sky3));
+      background: linear-gradient(180deg, var(--sky1), var(--sky3));
     }
-    .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 56px; }
+    /* 고정 배경(스크롤 영향 없음) */
+    .bg-fixed { position: fixed; inset: 0; z-index: -1;
+      background: url('assets/bg-maple.png') center center / cover no-repeat; }
+    .bg-fixed::after { content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,.4), rgba(255,255,255,.18) 35%, rgba(233,215,255,.4)); }
+
+    /* 가로 3화면 캐러셀 */
+    .screens { display: flex; width: 100vw; height: 100vh; height: 100dvh;
+      overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+    .screens::-webkit-scrollbar { display: none; }
+    .screens { scrollbar-width: none; }
+    .screen { flex: 0 0 100vw; width: 100vw; height: 100%; scroll-snap-align: center;
+      overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .screen::-webkit-scrollbar { width: 0; }
+    .screen-inner { max-width: 620px; margin: 0 auto; padding: 10px 16px 40px; min-height: 100%; }
+    .screen-inner.s1 { display: flex; flex-direction: column; min-height: 100dvh; padding-bottom: 20px; }
+
+    /* 좌우 방향키 */
+    .nav { position: fixed; top: 50%; transform: translateY(-50%); z-index: 20;
+      width: 44px; height: 64px; border: 0; cursor: pointer; font-size: 2rem; line-height: 1;
+      color: #fff; font-family: "Jua", sans-serif; border-radius: 16px;
+      background: linear-gradient(180deg, rgba(103,182,255,.92), rgba(74,167,255,.92));
+      box-shadow: 0 5px 0 rgba(45,120,196,.9), inset 0 2px 2px rgba(255,255,255,.5);
+      transition: opacity .2s ease, transform .1s ease; }
+    .nav:active { transform: translateY(-50%) scale(.94); }
+    .nav.prev { left: 8px; } .nav.next { right: 8px; }
+    .nav[disabled] { opacity: 0; pointer-events: none; }
+    .dots { position: fixed; left: 50%; transform: translateX(-50%); bottom: 12px; z-index: 20;
+      display: flex; gap: 8px; }
+    .dots .dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.65);
+      box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: all .2s ease; cursor: pointer; }
+    .dots .dot.on { background: var(--gold); width: 22px; border-radius: 6px; }
 
     .topbar { display: flex; justify-content: flex-end; align-items: center; gap: 8px; padding: 12px 0 0; }
     .mode { font-size: .72rem; color: #6b5e45; background: #fff; border: 2px solid #fff; border-radius: 999px; padding: 4px 11px; box-shadow: 0 3px 0 rgba(120,100,60,.25); }
@@ -202,6 +231,17 @@
       .hero, .countdown, h2.sec, #defenderBox, .score, .players, #champsBox, #ss, #defenderBox .crown { animation: none !important; }
     }
 
+    /* 화면1: 로고(포스터) 축소 — 세로 화면에 topbar·주크박스·타이머까지 수용 */
+    .screen-inner.s1 .hero { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; margin: 12px 0; }
+    .screen-inner.s1 .hero img { width: auto; max-width: 100%; max-height: 50vh; max-height: 50dvh; object-fit: contain; }
+    .screen-inner.s1 .countdown { flex: 0 0 auto; margin: 0; }
+    .screen-inner.s1 .jukebox { flex: 0 0 auto; }
+
+    /* 명단 모드(대회 전): 순위·점수 없이 이름만, 직전 우승자 맨 위 왕관 */
+    .score .row.name-only { gap: 10px; }
+    .score .row.name-only .nm { font-size: 1.08rem; }
+    .score .row.name-only .crown { filter: drop-shadow(0 0 4px rgba(244,184,46,.8)); }
+
     /* ================= 모바일 반응형 ================= */
     @media (max-width: 560px) {
       .wrap { padding: 0 12px 48px; }
@@ -230,7 +270,12 @@
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <div class="bg-fixed"></div>
+
+  <div class="screens" id="screens">
+
+    <!-- ===== 1화면: 관리자·주크박스·로고·남은 시간 ===== -->
+    <section class="screen"><div class="screen-inner s1">
     <div class="topbar">
       <span class="mode" id="mode">로컬 모드</span>
       <button class="adminbtn" id="adminToggle">관리자</button>
@@ -292,22 +337,28 @@
         <div class="unit"><div class="num" id="ss">00</div><div class="cap">SEC</div></div>
       </div>
     </div>
+    </div></section>
 
-    <!-- 실시간 스코어보드 -->
-    <h2 class="sec">🔥 실시간 스코어보드</h2>
-    <div id="defenderBox"></div>
-    <div class="score" id="scoreBox"></div>
+    <!-- ===== 2화면: 전대회 우승자 + 스코어/명단 보드 ===== -->
+    <section class="screen"><div class="screen-inner">
+      <h2 class="sec" id="boardTitle">🔥 실시간 스코어보드</h2>
+      <div id="defenderBox"></div>
+      <div class="score" id="scoreBox"></div>
+    </div></section>
 
-    <!-- 참가자 명단 -->
-    <h2 class="sec">👥 참가자 명단</h2>
-    <div class="players" id="players"></div>
+    <!-- ===== 3화면: 회차별 우승자 ===== -->
+    <section class="screen"><div class="screen-inner">
+      <h2 class="sec">🏆 회차별 우승자</h2>
+      <div id="champsBox"></div>
+      <p class="foot">호구컵</p>
+    </div></section>
 
-    <!-- 회차별 우승자 -->
-    <h2 class="sec">🏆 회차별 우승자</h2>
-    <div id="champsBox"></div>
-
-    <p class="foot">호구컵</p>
   </div>
+
+  <!-- 좌우 화면 전환 -->
+  <button class="nav prev" id="navPrev" aria-label="이전 화면">‹</button>
+  <button class="nav next" id="navNext" aria-label="다음 화면">›</button>
+  <div class="dots" id="dots"></div>
 
   <script type="module">
   // ===================================================================
@@ -451,8 +502,33 @@
 
   let lastBumped = null;   // 방금 점수가 바뀐 참가자(팝 애니메이션용)
   // 스코어보드 — 전체 순위 리스트(1·2·3등 금·은·동 메달)
+  // 대회 날짜 이전(또는 미정)이면 true → 참가자 명단 모드 / 지나면 스코어 모드
+  function isBeforeEvent(){
+    if (!state.eventDate) return true;
+    return Date.now() < new Date(state.eventDate).getTime();
+  }
+
   function renderScore(){
     const champ = prevPodium().champ; const champName = champ ? champ.name : null;
+    const before = isBeforeEvent();
+    $('boardTitle').innerHTML = before ? '👥 참가자 명단' : '🔥 실시간 스코어보드';
+
+    if (before) {
+      // 명단 모드: 순위·점수·조작 없이 이름만, 직전 우승자 맨 위 + 왕관
+      const champFirst = [], others = [];
+      state.participants.forEach(p => { (champName && p.name === champName ? champFirst : others).push(p); });
+      const ordered = champFirst.concat(others);
+      $('scoreBox').innerHTML = ordered.map(p => {
+        const isChamp = champName && p.name === champName;
+        return `<div class="row name-only ${isChamp?'champ':''}">
+          <div class="nm">${p.name} <small>#${p.no}</small>${isChamp?' <span class="crown">👑</span>':''}</div>
+        </div>`;
+      }).join('') || '<div class="empty">참가자가 없습니다.</div>';
+      lastBumped = null;
+      return;
+    }
+
+    // 스코어 모드: 순위(금·은·동 메달) + 점수 + 관리자 조작
     const list = sortedScores();
     $('scoreBox').innerHTML = list.map((p,i)=>{
       const rankCell = i < 3
@@ -476,10 +552,7 @@
     lastBumped = name; renderScore(); save();
   }
 
-  function renderPlayers(){
-    $('players').innerHTML = state.participants.map(p =>
-      `<div class="player"><div class="no">${p.no}</div><div class="nm">${p.name}</div></div>`).join('');
-  }
+  // (참가자 명단은 2화면 보드의 '명단 모드'로 통합됨)
 
   function renderChamps(){
     const winners = (state.champions||[]).filter(c => Number(c.rank||1) === 1);
@@ -522,7 +595,7 @@
   // 대문 이미지 (업로드본 있으면 그걸로, 없으면 기본 포스터)
   function renderHero(){ $('heroImg').src = state.poster || 'poster.png'; }
 
-  function renderAll(){ renderHero(); renderClock(); renderDefender(); renderScore(); renderPlayers(); renderChamps(); renderAdmin(); renderJukebox(); }
+  function renderAll(){ renderHero(); renderClock(); renderDefender(); renderScore(); renderChamps(); renderAdmin(); renderJukebox(); }
 
   // ---------- 관리자 토글 ----------
   $('adminToggle').onclick = ()=>{
@@ -640,10 +713,34 @@
     }
   };
 
+  // ---------- 화면 캐러셀 네비게이션 ----------
+  const screensEl = $('screens'); const dotsEl = $('dots'); const SCREEN_COUNT = 3;
+  function currentScreen(){ return Math.round(screensEl.scrollLeft / screensEl.clientWidth); }
+  function goTo(i){ i = Math.max(0, Math.min(SCREEN_COUNT-1, i)); screensEl.scrollTo({ left: i*screensEl.clientWidth, behavior: 'smooth' }); }
+  dotsEl.innerHTML = Array.from({length:SCREEN_COUNT}, (_,i)=>`<div class="dot" data-i="${i}"></div>`).join('');
+  dotsEl.querySelectorAll('.dot').forEach(d=> d.onclick=()=> goTo(+d.dataset.i));
+  function updateNav(){
+    const i = currentScreen();
+    $('navPrev').disabled = i <= 0;
+    $('navNext').disabled = i >= SCREEN_COUNT-1;
+    dotsEl.querySelectorAll('.dot').forEach((d,idx)=> d.classList.toggle('on', idx===i));
+  }
+  $('navPrev').onclick = ()=> goTo(currentScreen()-1);
+  $('navNext').onclick = ()=> goTo(currentScreen()+1);
+  screensEl.addEventListener('scroll', ()=> requestAnimationFrame(updateNav), { passive:true });
+  window.addEventListener('keydown', (e)=>{ if(e.key==='ArrowLeft') goTo(currentScreen()-1); else if(e.key==='ArrowRight') goTo(currentScreen()+1); });
+  window.addEventListener('resize', ()=>{ goTo(currentScreen()); updateNav(); });
+  updateNav();
+
   // ---------- 시작 ----------
   renderAll();
   loadTrack(0, true);   // 첫 곡 로드 + 자동재생 시도(차단 시 첫 상호작용/▶로 재생)
-  setInterval(renderClock, 1000);
+  let lastBefore = isBeforeEvent();
+  setInterval(()=>{
+    renderClock();
+    const b = isBeforeEvent();
+    if (b !== lastBefore) { lastBefore = b; renderScore(); }   // 대회 시작 시각을 넘기면 명단→스코어 자동 전환
+  }, 1000);
   initFirebase().catch(e => console.warn('Firebase 미설정/오류 → 로컬 모드', e));
   </script>
 </body>
