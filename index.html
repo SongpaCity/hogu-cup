@@ -25,8 +25,8 @@
       font-family: "Jua", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
       -webkit-text-size-adjust: 100%;
       background:
-        linear-gradient(180deg, rgba(174,228,255,.25), rgba(233,215,255,.35)),
-        url('assets/bg-ludibrium.png') center top / cover fixed,
+        linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,.12) 30%, rgba(233,215,255,.3)),
+        url('assets/bg-maple.png') center top / cover fixed,
         linear-gradient(180deg, var(--sky1), var(--sky3));
     }
     .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 56px; }
@@ -67,18 +67,24 @@
       box-shadow: 0 4px 0 rgba(120,100,60,.2); border: 2px solid #fff;
     }
 
-    /* 디펜딩 챔피언 (지난 대회 우승자) */
-    #defenderBox { max-width: 440px; margin: 0 auto 18px; }
-    #defenderBox .dlabel { text-align: center; color: var(--gold2); font-size: .92rem; letter-spacing: .04em; margin-bottom: 6px; }
-    #defenderBox .frame { position: relative; }
-    #defenderBox .frame img { width: 100%; display: block; filter: drop-shadow(0 8px 18px rgba(120,90,20,.4)); }
-    #defenderBox .name { position: absolute; left: 50%; top: 51%; transform: translate(-50%, -50%); width: 40%; text-align: center; }
-    #defenderBox .name .nm { font-size: clamp(1.1rem, 5.5vw, 1.85rem); color: #fff; letter-spacing: .02em; text-shadow: 0 2px 3px #7a4e00, 0 0 12px rgba(255,220,120,.7); line-height: 1.1; }
-    #defenderBox .name .disc { font-size: .8rem; color: #fff6dc; margin-top: 3px; font-family: "Gaegu", sans-serif; }
-    #defenderBox .name .tbd { color: #fff6e6; }
+    /* 디펜딩 챔피언 (지난 대회 우승자) — 메이플 팝업 패널 + 금장 */
+    #defenderBox { max-width: 400px; margin: 10px auto 18px; }
+    #defenderBox .champcard {
+      position: relative; text-align: center; padding: 30px 22px 20px;
+      background: url('assets/panel-base.png') no-repeat center / 100% 100%;
+      border: 3px solid var(--gold); border-radius: 22px;
+      box-shadow: 0 10px 26px rgba(70,70,120,.3), 0 0 0 4px rgba(255,255,255,.55) inset, 0 0 22px rgba(244,184,46,.4);
+    }
+    #defenderBox .crown { position: absolute; top: -26px; left: 50%; transform: translateX(-50%); font-size: 2.6rem; filter: drop-shadow(0 3px 4px rgba(120,80,0,.45)); animation: bob 2.4s ease-in-out infinite; }
+    #defenderBox .clabel { color: #fff; font-size: .9rem; letter-spacing: .03em; text-shadow: 0 1px 3px rgba(20,40,80,.6); }
+    #defenderBox .cname { font-size: clamp(1.6rem, 8vw, 2.4rem); color: #fff; line-height: 1.1; margin-top: 4px;
+      text-shadow: 0 2px 4px rgba(20,40,80,.65), 0 0 14px rgba(255,235,160,.7); }
+    #defenderBox .champcard.tbd .cname { opacity: .9; }
+    #defenderBox .cdisc { font-size: .9rem; color: #fff3d6; margin-top: 4px; font-family: "Gaegu", sans-serif; text-shadow: 0 1px 2px rgba(20,40,80,.6); }
     #defenderBox .podium { display: flex; gap: 14px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
-    #defenderBox .podium .p { font-size: .92rem; color: var(--ink); background: #fff; border-radius: 12px; padding: 6px 12px; box-shadow: 0 3px 0 rgba(120,100,60,.18); }
+    #defenderBox .podium .p { font-size: .92rem; color: var(--ink); background: rgba(255,255,255,.92); border-radius: 12px; padding: 6px 12px; box-shadow: 0 3px 0 rgba(120,100,60,.18); }
     #defenderBox .podium .p b { color: var(--gold2); }
+    @keyframes bob { 0%,100%{ transform: translateX(-50%) translateY(0); } 50%{ transform: translateX(-50%) translateY(-6px); } }
 
     /* 스코어보드 — 블록 카드 */
     .score { background: var(--card); border: 4px solid #fff; border-radius: 18px; overflow: hidden; box-shadow: var(--block-shadow) rgba(120,100,60,.22); }
@@ -102,35 +108,6 @@
     /* 전대회 우승자(디펜딩 챔피언) 금장 슬롯 */
     .score .row.champ { background: linear-gradient(90deg, rgba(244,184,46,.28), rgba(244,184,46,.06)); box-shadow: inset 5px 0 0 var(--gold); }
     .score .row .crown { filter: drop-shadow(0 0 4px rgba(244,184,46,.75)); margin-left: 2px; }
-
-    /* TOP3 시상대(포디움) */
-    #podiumBox { margin: 0 0 14px; }
-    .podium3 { display: flex; align-items: flex-end; justify-content: center; gap: 10px; }
-    .podium3 .col { flex: 1 1 0; max-width: 33%; display: flex; flex-direction: column; align-items: center; }
-    .podium3 .col.empty-col { visibility: hidden; }
-    .podium3 .who { font-size: 1rem; color: var(--ink); text-align: center; line-height: 1.15; margin-bottom: 2px; }
-    .podium3 .who small { color: var(--muted); font-size: .7rem; margin-left: 3px; font-family: "Gaegu", sans-serif; }
-    .podium3 .who .crown { filter: drop-shadow(0 0 4px rgba(244,184,46,.8)); }
-    .podium3 .pt { font-size: 1.5rem; color: var(--gold2); line-height: 1; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
-    .podium3 .ctl { display: flex; gap: 5px; margin-bottom: 6px; }
-    .podium3 .ctl button { width: 30px; height: 30px; border-radius: 9px; border: 0; color: #fff; cursor: pointer; font-family: "Jua",sans-serif; box-shadow: inset 0 2px 2px rgba(255,255,255,.4), 0 3px 0 rgba(0,0,0,.18); }
-    .podium3 .ctl button[data-up]{ background: var(--toy-green); }
-    .podium3 .ctl button[data-dn]{ background: var(--toy-red); }
-    .podium3 .ctl button:active { transform: translateY(2px); }
-    /* 받침대 — 순위별 높낮이 다름 */
-    .podium3 .ped { width: 100%; border-radius: 12px 12px 6px 6px; display: grid; place-items: center;
-      background: linear-gradient(180deg, #ffffff, #eef0f6); border: 3px solid #fff;
-      box-shadow: inset 0 3px 4px rgba(255,255,255,.8), 0 6px 0 rgba(120,110,90,.28); }
-    .podium3 .r1 .ped { height: 96px; }
-    .podium3 .r2 .ped { height: 72px; }
-    .podium3 .r3 .ped { height: 54px; }
-    /* 입체 금은동 숫자 */
-    .podium3 .rnum { font-size: 2.9rem; line-height: 1; font-family: "Jua", sans-serif; -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .podium3 .ng { background: linear-gradient(180deg,#fff3b0 10%,#f4c430 45%,#b5841d 90%); text-shadow: 0 2px 1px rgba(120,80,0,.35); }
-    .podium3 .ns { background: linear-gradient(180deg,#ffffff 10%,#cfd6df 45%,#8a94a4 90%); text-shadow: 0 2px 1px rgba(70,80,95,.3); }
-    .podium3 .nb { background: linear-gradient(180deg,#ffd9a8 10%,#cd7f32 45%,#7d4f23 90%); text-shadow: 0 2px 1px rgba(80,45,10,.3); }
-    .podium3 .col.champ .ped { border-color: var(--gold); box-shadow: inset 0 3px 4px rgba(255,255,255,.8), 0 6px 0 var(--gold2), 0 0 14px rgba(244,184,46,.5); }
-    .podium3 .col.champ .who { color: var(--gold2); }
 
     /* 참가자 — 블록 명패 */
     .players { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 12px; }
@@ -167,7 +144,69 @@
     #admin .line { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: 4px 0; }
     #admin .hint { color: var(--muted); font-size: .85rem; line-height: 1.5; font-family: "Gaegu", sans-serif; }
 
-    .foot { color: #7f74a0; font-size: .85rem; text-align: center; margin-top: 36px; font-family: "Gaegu", sans-serif; }
+    .foot { color: #5a4f7a; font-size: .85rem; text-align: center; margin-top: 36px; font-family: "Gaegu", sans-serif; text-shadow: 0 1px 2px rgba(255,255,255,.5); }
+
+    /* ================= 연출(트랜지션·애니메이션) ================= */
+    html { -webkit-tap-highlight-color: transparent; }
+    img { max-width: 100%; }
+    .adminbtn, #bgmBtn, #admin button.act, #admin button.rm, .score .ctl button { transition: transform .09s ease, box-shadow .12s ease, filter .15s ease; }
+    .adminbtn:hover, #bgmBtn:hover, #admin button.act:hover, .score .ctl button:hover { filter: brightness(1.08); }
+    .hero { animation: floaty 5.5s ease-in-out infinite; }
+    .hero img { transition: transform .3s ease, box-shadow .3s ease; }
+    .hero img:hover { transform: scale(1.015); }
+    .player { transition: transform .18s ease, box-shadow .18s ease; }
+    .player:hover { transform: translateY(-3px); box-shadow: 0 8px 0 rgba(120,100,60,.2); }
+    .score .row { transition: background .2s ease; }
+    .score .row:hover { background: rgba(244,184,46,.07); }
+    .champs tr { transition: background .2s ease; }
+    .champs tbody tr:hover { background: rgba(176,123,255,.08); }
+    /* 초 단위 맥박 */
+    #ss { display: inline-block; animation: secpulse 1s ease-out infinite; }
+    /* 점수 변동 팝 */
+    .score .pt.pop { animation: ptpop .55s cubic-bezier(.22,1,.36,1); }
+    /* 등장 리빌(로드 시 1회) */
+    .hero, .countdown, h2.sec, #defenderBox, .score, .players, #champsBox {
+      animation: revealUp .6s cubic-bezier(.22,1,.36,1) both;
+    }
+    .hero { animation: revealUp .6s cubic-bezier(.22,1,.36,1) both, floaty 5.5s ease-in-out 1s infinite; }
+    .countdown { animation-delay: .06s; }
+    #defenderBox { animation-delay: .12s; }
+    .score { animation-delay: .18s; }
+    .players { animation-delay: .24s; }
+    #champsBox { animation-delay: .3s; }
+    @keyframes revealUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+    @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    @keyframes secpulse { 0% { transform: scale(1.14); } 60%,100% { transform: scale(1); } }
+    @keyframes ptpop { 0% { transform: scale(1); } 30% { transform: scale(1.55); color: var(--toy-green); } 100% { transform: scale(1); } }
+    @media (prefers-reduced-motion: reduce) {
+      .hero, .countdown, h2.sec, #defenderBox, .score, .players, #champsBox, #ss, #defenderBox .crown { animation: none !important; }
+    }
+
+    /* ================= 모바일 반응형 ================= */
+    @media (max-width: 560px) {
+      .wrap { padding: 0 12px 48px; }
+      .topbar { gap: 6px; }
+      h2.sec { font-size: 1.12rem; padding: 5px 13px; margin: 28px 0 12px; }
+      .countdown { padding: 16px 12px; }
+      .countdown .label { font-size: 1rem; }
+      .clock { gap: 8px; }
+      .unit { min-width: 64px; padding: 10px 10px; }
+      .unit .num { font-size: 1.6rem; }
+      .score .row { padding: 11px 12px; gap: 9px; }
+      .score .nm { font-size: .98rem; }
+      .score .pt { font-size: 1.25rem; }
+      .score .ctl button { width: 32px; height: 32px; }
+      .players { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 9px; }
+      #defenderBox { max-width: 340px; }
+      #admin input { font-size: .92rem; }
+      #admin .line { gap: 5px; }
+    }
+    @media (max-width: 380px) {
+      .clock { gap: 6px; }
+      .unit { min-width: 56px; padding: 9px 7px; }
+      .unit .num { font-size: 1.4rem; }
+      .players { grid-template-columns: repeat(2, 1fr); }
+    }
   </style>
 </head>
 <body>
@@ -222,7 +261,6 @@
     <!-- 실시간 스코어보드 -->
     <h2 class="sec">🔥 실시간 스코어보드</h2>
     <div id="defenderBox"></div>
-    <div id="podiumBox"></div>
     <div class="score" id="scoreBox"></div>
 
     <!-- 참가자 명단 -->
@@ -347,13 +385,11 @@
         ${third?`<div class="p">🥉 <b>${third.name}</b>${third.discipline?` · ${third.discipline}`:''}</div>`:''}
       </div>` : '';
     $('defenderBox').innerHTML = `
-      <div class="dlabel">🧱 👑 지난 대회(제 ${prevRound}회) 우승자 👑 🧱</div>
-      <div class="frame">
-        <img src="champ-frame.png" alt="디펜딩 챔피언 프레임">
-        <div class="name">
-          <div class="nm ${champ ? '' : 'tbd'}">${name}</div>
-          ${disc ? `<div class="disc">${disc}</div>` : ''}
-        </div>
+      <div class="champcard ${champ ? '' : 'tbd'}">
+        <div class="crown">👑</div>
+        <div class="clabel">지난 대회 (제 ${prevRound}회) 우승자</div>
+        <div class="cname">${name}</div>
+        ${disc ? `<div class="cdisc">${disc}</div>` : ''}
       </div>
       ${podium}`;
   }
@@ -372,47 +408,31 @@
     container.querySelectorAll('[data-dn]').forEach(b=> b.onclick=()=>{ bump(b.dataset.dn, -1); });
   }
 
-  // TOP3 시상대(포디움) — 2·1·3 배치, 단 높낮이 다름, 입체 금은동 숫자
-  function renderPodium(){
-    const champ = prevPodium().champ; const champName = champ ? champ.name : null;
-    const list = sortedScores();
-    if (!list.length) { $('podiumBox').innerHTML = ''; return; }
-    const slots = [ {p:list[1], rank:2, cls:'s'}, {p:list[0], rank:1, cls:'g'}, {p:list[2], rank:3, cls:'b'} ];
-    $('podiumBox').innerHTML = `<div class="podium3">` + slots.map(s => {
-      if (!s.p) return `<div class="col r${s.rank} empty-col"></div>`;
-      const isChamp = champName && s.p.name === champName;
-      return `<div class="col r${s.rank} ${isChamp?'champ':''}">
-          <div class="who">${isChamp?'<span class="crown">👑</span> ':''}<span class="who-nm">${s.p.name}</span><small>#${s.p.no}</small></div>
-          <div class="pt">${s.p.score}</div>
-          ${ctlHtml(s.p.name)}
-          <div class="ped n${s.cls}"><span class="rnum">${s.rank}</span></div>
-        </div>`;
-    }).join('') + `</div>`;
-    bindBump($('podiumBox'));
-  }
-
-  // 4등 이하 리스트
+  let lastBumped = null;   // 방금 점수가 바뀐 참가자(팝 애니메이션용)
+  // 스코어보드 — 전체 순위 리스트(1·2·3등 금·은·동 메달)
   function renderScore(){
     const champ = prevPodium().champ; const champName = champ ? champ.name : null;
     const list = sortedScores();
-    const rest = list.slice(3);
-    if (!rest.length) { $('scoreBox').innerHTML = ''; $('scoreBox').style.display='none'; return; }
-    $('scoreBox').style.display='';
-    $('scoreBox').innerHTML = rest.map((p,idx)=>{
-      const i = idx + 3; const isChamp = champName && p.name === champName;
+    $('scoreBox').innerHTML = list.map((p,i)=>{
+      const rankCell = i < 3
+        ? `<div class="medal ${i===0?'g':i===1?'s':'b'}">${i+1}</div>`
+        : `<div class="rk">${i+1}</div>`;
+      const isChamp = champName && p.name === champName;
+      const pop = p.name === lastBumped ? ' pop' : '';
       return `<div class="row ${isChamp?'champ':''}">
-        <div class="rk">${i+1}</div>
+        ${rankCell}
         <div class="nm">${p.name} <small>#${p.no}</small>${isChamp?' <span class="crown">👑</span>':''}</div>
-        <div class="pt">${p.score}</div>
+        <div class="pt${pop}">${p.score}</div>
         ${ctlHtml(p.name)}
       </div>`;
-    }).join('');
+    }).join('') || '<div class="empty">참가자가 없습니다.</div>';
+    lastBumped = null;
     bindBump($('scoreBox'));
   }
   function bump(name, delta){
     state.scores = state.scores || {};
     state.scores[name] = Math.max(0, Number(state.scores[name]||0) + delta);
-    renderPodium(); renderScore(); save();
+    lastBumped = name; renderScore(); save();
   }
 
   function renderPlayers(){
@@ -451,7 +471,7 @@
   // 대문 이미지 (업로드본 있으면 그걸로, 없으면 기본 포스터)
   function renderHero(){ $('heroImg').src = state.poster || 'poster.png'; }
 
-  function renderAll(){ renderHero(); renderClock(); renderDefender(); renderPodium(); renderScore(); renderPlayers(); renderChamps(); renderAdmin(); }
+  function renderAll(){ renderHero(); renderClock(); renderDefender(); renderScore(); renderPlayers(); renderChamps(); renderAdmin(); }
 
   // ---------- 관리자 토글 ----------
   $('adminToggle').onclick = ()=>{
