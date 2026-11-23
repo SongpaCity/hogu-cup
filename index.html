@@ -139,6 +139,7 @@
     #defenderBox .dlabel { text-align: center; color: var(--gold2); font-size: 1.05rem; margin-bottom: 10px;
       background: rgba(255,255,255,.85); border-radius: 14px; padding: 6px 14px; display: table; margin-left: auto; margin-right: auto;
       box-shadow: 0 3px 0 rgba(120,100,60,.18); }
+    #defenderBox .dlabel .ddisc { color: var(--muted); font-size: .88rem; font-family: "Gaegu", sans-serif; }
     .wpodium { display: flex; align-items: flex-end; justify-content: center; gap: 10px; }
     .wp { flex: 1 1 0; max-width: 128px; display: flex; flex-direction: column; align-items: center; }
     .wp.empty { visibility: hidden; }
@@ -570,8 +571,10 @@
         <div class="ped"><span class="rnum">${r}</span></div>
       </div>`;
     };
+    const first = by(1);
+    const discLabel = (first && first.discipline) ? ` <span class="ddisc">(${first.discipline})</span>` : '';
     $('defenderBox').innerHTML = `
-      <div class="dlabel">🏆 제 ${prevRound}회 호구컵 수상자들</div>
+      <div class="dlabel">🏆 제 ${prevRound}회 호구컵 수상자들${discLabel}</div>
       <div class="wpodium">${slot(by(2),2)}${slot(by(1),1)}${slot(by(3),3)}</div>`;
   }
 
