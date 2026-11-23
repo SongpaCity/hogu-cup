@@ -3,51 +3,147 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>호구컵 — 호구들의 월드컵</title>
-  <meta property="og:title" content="호구컵 — 호구들의 월드컵" />
-  <meta property="og:description" content="호구들의 월드컵. 누가 진짜 호구인가?" />
+  <title>호구컵</title>
+  <meta property="og:title" content="호구컵" />
+  <meta property="og:description" content="제2회 호구컵 — THE ROAD TO THE THRONE" />
+  <meta property="og:image" content="poster.png" />
   <style>
-    :root { --bg:#0f1115; --card:#171a21; --text:#e6e8ec; --muted:#9aa3af; --accent:#f5c542; --border:#272b33; }
+    :root { --bg:#0a0d14; --card:#141922; --text:#e9edf4; --muted:#93a0b4; --gold:#f4c430; --gold2:#caa22a; --border:#232b38; --up:#ef4444; }
     * { box-sizing: border-box; }
-    html, body { height: 100%; }
     body {
-      margin: 0; background: radial-gradient(1200px 600px at 50% -10%, #1b2030, var(--bg));
+      margin: 0; background: radial-gradient(1000px 500px at 50% -5%, #141b2b, var(--bg));
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      min-height: 100vh; text-align: center; padding: 24px; -webkit-text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100%;
     }
-    .badge { font-size: .8rem; color: var(--accent); letter-spacing: .08em; font-weight: 700; margin-bottom: 10px; }
-    h1 { font-size: 2.1rem; margin: 0 0 8px; letter-spacing: -.02em; }
-    .sub { color: var(--muted); max-width: 30rem; line-height: 1.6; margin: 0 0 26px; }
-    .card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-      padding: 22px 24px; max-width: 32rem; width: 100%;
-    }
-    .vs { display: flex; align-items: center; gap: 14px; justify-content: center; margin: 6px 0 2px; }
-    .pick {
-      flex: 1; background: #0f1115; border: 1px solid var(--border); border-radius: 12px;
-      padding: 28px 10px; font-size: 1.1rem; font-weight: 700; color: var(--text);
-    }
-    .vs .mid { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
-    .note { color: var(--muted); font-size: .85rem; margin-top: 18px; line-height: 1.6; }
-    .foot { color: #5b6473; font-size: .76rem; margin-top: 28px; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 56px; }
+
+    /* 대문 포스터 */
+    .hero { margin: 18px 0 0; }
+    .hero img { width: 100%; height: auto; display: block; border-radius: 18px; border: 1px solid var(--border); box-shadow: 0 12px 40px rgba(0,0,0,.5); }
+
+    /* 카운트다운 */
+    .countdown { margin: 22px 0 0; background: linear-gradient(180deg, #19202c, #11161f); border: 1px solid var(--border); border-radius: 16px; padding: 20px 18px; text-align: center; }
+    .countdown .label { color: var(--gold); font-weight: 700; letter-spacing: .02em; font-size: .98rem; }
+    .countdown .date { color: var(--muted); font-size: .82rem; margin-top: 4px; }
+    .clock { margin-top: 12px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .unit { background: #0a0d14; border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; min-width: 74px; }
+    .unit .num { font-size: 1.9rem; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: .02em; color: #fff; line-height: 1.1; }
+    .unit .cap { font-size: .68rem; color: var(--muted); margin-top: 2px; letter-spacing: .08em; }
+
+    /* 섹션 공통 */
+    h2.sec { font-size: 1.15rem; margin: 30px 0 12px; padding-left: 10px; border-left: 4px solid var(--gold); }
+
+    /* 참가자 */
+    .players { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+    .player { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; display: flex; align-items: center; gap: 12px; }
+    .player .no { width: 40px; height: 40px; flex: 0 0 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 1.05rem; background: linear-gradient(145deg, var(--gold), var(--gold2)); color: #1a1205; }
+    .player .nm { font-weight: 700; font-size: .98rem; letter-spacing: .01em; }
+
+    /* 우승자 */
+    .champs { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .champs th, .champs td { padding: 11px 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: .92rem; }
+    .champs th { color: var(--muted); font-weight: 600; font-size: .78rem; background: #0f141d; }
+    .champs tr:last-child td { border-bottom: 0; }
+    .champs .trophy { color: var(--gold); }
+    .empty { color: var(--muted); font-size: .9rem; text-align: center; padding: 20px; background: var(--card); border: 1px dashed var(--border); border-radius: 14px; }
+
+    .foot { color: #566072; font-size: .76rem; text-align: center; margin-top: 34px; }
   </style>
 </head>
 <body>
-  <div class="badge">HOGU CUP</div>
-  <h1>🏆 호구들의 월드컵</h1>
-  <p class="sub">누가 진짜 호구인가? 둘 중 더 호구를 골라 끝까지 살아남는 최종 호구를 가린다.</p>
+  <div class="wrap">
+    <!-- 대문 포스터 -->
+    <div class="hero"><img src="poster.png" alt="제2회 호구컵 포스터" /></div>
 
-  <div class="card">
-    <div class="vs">
-      <div class="pick">？</div>
-      <div class="mid">VS</div>
-      <div class="pick">？</div>
+    <!-- 카운트다운 -->
+    <div class="countdown">
+      <div class="label" id="cdLabel">제 2회 호구컵까지 남은 시간</div>
+      <div class="date" id="cdDate">호구컵 날짜 미정</div>
+      <div class="clock" id="clock">
+        <div class="unit"><div class="num" id="dd">00</div><div class="cap">DAYS</div></div>
+        <div class="unit"><div class="num" id="hh">00</div><div class="cap">HOURS</div></div>
+        <div class="unit"><div class="num" id="mm">00</div><div class="cap">MIN</div></div>
+        <div class="unit"><div class="num" id="ss">00</div><div class="cap">SEC</div></div>
+      </div>
     </div>
-    <p class="note">🚧 준비 중입니다. 곧 토너먼트가 열립니다.</p>
+
+    <!-- 참가자 명단 -->
+    <h2 class="sec">👥 참가자 명단</h2>
+    <div class="players" id="players"></div>
+
+    <!-- 회차별 우승자 -->
+    <h2 class="sec">🏆 회차별 우승자</h2>
+    <div id="champsBox"></div>
+
+    <p class="foot">hogu-cup · GitHub Pages</p>
   </div>
 
-  <p class="foot">hogu-cup · GitHub Pages</p>
+  <script>
+  // ===== 편집 영역: 여기만 바꾸면 됩니다 =====
+  const HOGU = {
+    edition: 2,                 // 몇 회차인지
+    // 날짜 미정이면 null. 정해지면 "2026-12-25T14:00:00+09:00" 형식으로 입력하세요.
+    eventDate: null,
+    participants: [
+      { name: "SANGYUN",  no: 7 },
+      { name: "SEOKJUN",  no: 10 },
+      { name: "JAEWOOK",  no: 11 },
+      { name: "MUNSEUNG", no: 9 },
+      { name: "WONHYUN",  no: 8 },
+      { name: "MINGU",    no: 6 }
+    ],
+    // 회차별 우승자. 예: { round: 1, name: "홍길동", discipline: "스타크래프트" }
+    champions: [
+      // 아직 기록 없음
+    ]
+  };
+  // ==========================================
+
+  // 라벨
+  document.getElementById('cdLabel').textContent = `제 ${HOGU.edition}회 호구컵까지 남은 시간`;
+
+  // 카운트다운
+  function pad(n){ return String(n).padStart(2, '0'); }
+  function renderClock(){
+    const dd = document.getElementById('dd'), hh = document.getElementById('hh'),
+          mm = document.getElementById('mm'), ss = document.getElementById('ss');
+    if (!HOGU.eventDate) {
+      document.getElementById('cdDate').textContent = '호구컵 날짜 미정';
+      dd.textContent = '00'; hh.textContent = '00'; mm.textContent = '00'; ss.textContent = '00';
+      return;
+    }
+    const target = new Date(HOGU.eventDate).getTime();
+    const now = Date.now();
+    let diff = Math.floor((target - now) / 1000);
+    const d = new Date(HOGU.eventDate);
+    document.getElementById('cdDate').textContent =
+      `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    if (diff <= 0) { dd.textContent='00'; hh.textContent='00'; mm.textContent='00'; ss.textContent='00'; return; }
+    const days = Math.floor(diff/86400); diff -= days*86400;
+    const hrs = Math.floor(diff/3600);  diff -= hrs*3600;
+    const min = Math.floor(diff/60);    const sec = diff - min*60;
+    dd.textContent = pad(days); hh.textContent = pad(hrs); mm.textContent = pad(min); ss.textContent = pad(sec);
+  }
+  renderClock();
+  setInterval(renderClock, 1000);
+
+  // 참가자
+  const pbox = document.getElementById('players');
+  pbox.innerHTML = HOGU.participants.map(p =>
+    `<div class="player"><div class="no">${p.no}</div><div class="nm">${p.name}</div></div>`
+  ).join('');
+
+  // 우승자
+  const cbox = document.getElementById('champsBox');
+  if (!HOGU.champions.length) {
+    cbox.innerHTML = `<div class="empty">아직 기록된 우승자가 없습니다. 🏅<br>첫 우승자가 가려지면 이곳에 역대 기록이 쌓입니다.</div>`;
+  } else {
+    const rows = HOGU.champions.slice().sort((a,b)=>b.round-a.round).map(c =>
+      `<tr><td>제 ${c.round}회</td><td class="trophy">🏆 ${c.name}</td><td>${c.discipline||''}</td></tr>`
+    ).join('');
+    cbox.innerHTML = `<table class="champs"><thead><tr><th>회차</th><th>우승자</th><th>종목</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+  </script>
 </body>
 </html>
