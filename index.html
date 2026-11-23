@@ -149,15 +149,19 @@
     .wp .wname { margin-top: 6px; font-size: .98rem; color: var(--ink); text-align: center; line-height: 1.1;
       text-shadow: 0 1px 2px rgba(255,255,255,.7); }
     .wp.r1 .wname { font-size: 1.12rem; color: var(--gold2); }
-    .wp .wdisc { font-size: .72rem; color: var(--muted); font-family: "Gaegu", sans-serif; margin-top: 1px; }
-    .wp .ped { width: 100%; margin-top: 8px; border-radius: 12px 12px 8px 8px; display: grid; place-items: center;
-      background: linear-gradient(180deg, #ffffff, #eef0f6); border: 3px solid #fff;
-      box-shadow: inset 0 3px 4px rgba(255,255,255,.8), 0 6px 0 rgba(120,110,90,.28); }
-    .wp.r1 .ped { height: 78px; } .wp.r2 .ped { height: 56px; } .wp.r3 .ped { height: 44px; }
-    .wp .rnum { font-size: 2.3rem; line-height: 1; font-family: "Jua", sans-serif; -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .wp .rnum.ng { background-image: linear-gradient(180deg,#fff3b0 10%,#f4c430 45%,#b5841d 90%); }
-    .wp .rnum.ns { background-image: linear-gradient(180deg,#ffffff 10%,#cfd6df 45%,#8a94a4 90%); }
-    .wp .rnum.nb { background-image: linear-gradient(180deg,#ffd9a8 10%,#cd7f32 45%,#7d4f23 90%); }
+    /* 금·은·동 컬러 블록 받침대 (장난감 블록 느낌) */
+    .wp .ped { width: 100%; margin-top: 8px; border-radius: 14px 14px 9px 9px; display: grid; place-items: center;
+      border: 3px solid rgba(255,255,255,.85); position: relative; overflow: hidden; }
+    .wp .ped::before { content: ""; position: absolute; top: 4px; left: 10%; right: 10%; height: 9px;
+      border-radius: 999px; background: rgba(255,255,255,.45); }   /* 블록 윗면 하이라이트 */
+    .wp.r1 .ped { height: 82px; background: linear-gradient(180deg, #ffd84d, #f4a712);
+      box-shadow: inset 0 3px 3px rgba(255,255,255,.5), 0 6px 0 #b5760c, 0 10px 14px rgba(170,110,10,.3); }
+    .wp.r2 .ped { height: 58px; background: linear-gradient(180deg, #dfe7f1, #a9b6c9);
+      box-shadow: inset 0 3px 3px rgba(255,255,255,.6), 0 6px 0 #78879c, 0 10px 14px rgba(90,105,125,.3); }
+    .wp.r3 .ped { height: 46px; background: linear-gradient(180deg, #f0b07a, #cd7f32);
+      box-shadow: inset 0 3px 3px rgba(255,255,255,.5), 0 6px 0 #8f5620, 0 10px 14px rgba(125,80,35,.3); }
+    .wp .rnum { font-size: 2.3rem; line-height: 1; font-family: "Jua", sans-serif; color: #fff;
+      text-shadow: 0 2px 3px rgba(0,0,0,.28), 0 0 10px rgba(255,255,255,.35); position: relative; }
     @keyframes wbob { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-5px); } }
     /* 관리자 참가자 목록 미니 프로필 */
     #aPlist .mini { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); background:#fff; }
@@ -563,8 +567,7 @@
         ${r===1 ? '<div class="wcrown">👑</div>' : ''}
         <img class="avatar" src="${photoOf(c.name)}" alt="${c.name}">
         <div class="wname">${c.name}</div>
-        ${c.discipline ? `<div class="wdisc">${c.discipline}</div>` : ''}
-        <div class="ped"><span class="rnum ${r===1?'ng':r===2?'ns':'nb'}">${r}</span></div>
+        <div class="ped"><span class="rnum">${r}</span></div>
       </div>`;
     };
     $('defenderBox').innerHTML = `
