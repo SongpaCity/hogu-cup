@@ -41,8 +41,28 @@
       box-shadow: 0 4px 0 #2d78c4, inset 0 2px 2px rgba(255,255,255,.5);
       text-shadow: 0 1px 1px rgba(0,0,0,.18);
     }
-    .adminbtn:active, #bgmBtn:active { transform: translateY(3px); box-shadow: 0 1px 0 #2d78c4, inset 0 2px 2px rgba(255,255,255,.5); }
-    #bgmBtn { width: 42px; height: 34px; font-size: 1rem; padding: 0; }
+    .adminbtn:active { transform: translateY(3px); box-shadow: 0 1px 0 #2d78c4, inset 0 2px 2px rgba(255,255,255,.5); }
+
+    /* 주크박스 */
+    .jukebox { display: flex; align-items: center; gap: 7px; margin: 10px 0 0; padding: 8px 10px;
+      background: rgba(255,255,255,.82); border: 3px solid #fff; border-radius: 16px;
+      box-shadow: 0 5px 0 rgba(120,100,60,.2); backdrop-filter: blur(2px); }
+    .jbctl { flex: 0 0 auto; width: 38px; height: 38px; border: 0; border-radius: 11px; cursor: pointer;
+      font-size: 1rem; color: #fff; font-family: "Jua", sans-serif;
+      background: linear-gradient(180deg, #67b6ff, var(--toy-blue));
+      box-shadow: 0 4px 0 #2d78c4, inset 0 2px 2px rgba(255,255,255,.5);
+      transition: transform .09s ease, box-shadow .12s ease, filter .15s ease; }
+    .jbctl:hover { filter: brightness(1.08); }
+    .jbctl:active { transform: translateY(3px); box-shadow: 0 1px 0 #2d78c4, inset 0 2px 2px rgba(255,255,255,.5); }
+    .jbctl.play { background: linear-gradient(180deg, #8ee6a4, var(--toy-green)); box-shadow: 0 4px 0 #2f9c52, inset 0 2px 2px rgba(255,255,255,.5); }
+    .jbctl.play:active { box-shadow: 0 1px 0 #2f9c52, inset 0 2px 2px rgba(255,255,255,.5); }
+    .jbinfo { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 6px; overflow: hidden; }
+    .jbnote { flex: 0 0 auto; }
+    .jbtitle { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      color: var(--ink); font-size: .92rem; font-family: "Gaegu", sans-serif; }
+    .jukebox.playing .jbnote { animation: notepulse 1s ease-in-out infinite; }
+    @keyframes notepulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.25); opacity: .7; } }
+    #aTlist .line span { flex: 1; font-size: .86rem; }
 
     /* 대문 포스터 — 나무 액자 블록 */
     .hero { margin: 14px 0 0; }
@@ -213,10 +233,18 @@
   <div class="wrap">
     <div class="topbar">
       <span class="mode" id="mode">로컬 모드</span>
-      <button id="bgmBtn" title="BGM 켜기/끄기">🔊</button>
       <button class="adminbtn" id="adminToggle">관리자</button>
     </div>
-    <audio id="bgm" src="assets/FantasticThinking.wav" loop preload="auto" playsinline></audio>
+
+    <!-- 주크박스 -->
+    <div class="jukebox" id="jukebox">
+      <button class="jbctl" id="jbPrev" title="이전 곡">⏮</button>
+      <button class="jbctl play" id="jbPlay" title="재생/정지">▶</button>
+      <button class="jbctl" id="jbNext" title="다음 곡">⏭</button>
+      <div class="jbinfo"><span class="jbnote">🎵</span><span class="jbtitle" id="jbTitle">—</span></div>
+      <button class="jbctl" id="bgmBtn" title="음소거">🔊</button>
+    </div>
+    <audio id="bgm" preload="auto" playsinline></audio>
 
     <!-- 관리자 패널 -->
     <div id="admin">
@@ -229,6 +257,13 @@
         <label>로비 대문 이미지 (업로드 시 전원 공유 · 자동 축소 저장)</label>
         <div class="line"><input type="file" id="aPoster" accept="image/*"><button class="act" id="aPosterReset">기본값</button></div>
         <p class="hint">큰 이미지는 자동으로 줄여 저장합니다(가로 최대 1100px).</p>
+      </div>
+      <div class="grp">
+        <label>🎵 주크박스 재생목록 (관리자 설정)</label>
+        <div class="line"><input id="aTtitle" placeholder="곡 제목" style="width:110px"><input id="aTurl" placeholder="오디오 URL (mp3 등)" style="flex:1;min-width:130px"><button class="act" id="aTadd">URL 추가</button></div>
+        <div class="line"><input type="file" id="aTfile" accept="audio/*"><button class="act" id="aTupload">파일 추가</button></div>
+        <p class="hint">URL/작은 파일(≤700KB)은 전원 공유, 큰 파일은 이 기기에서만 임시 재생됩니다.</p>
+        <div id="aTlist"></div>
       </div>
       <div class="grp">
         <label>참가자 추가</label>
@@ -306,6 +341,12 @@
     edition: 2,
     eventDate: null,
     poster: null,
+    tracks: [
+      { title: "Fantastic Thinking (루디브리엄)", src: "assets/music/fantastic-thinking.mp3" },
+      { title: "Blue World", src: "assets/music/blue-world.mp3" },
+      { title: "Down Town", src: "assets/music/down-town.mp3" },
+      { title: "Beachway", src: "assets/music/beachway.mp3" }
+    ],
     participants: [
       { name:"SANGYUN", no:7 }, { name:"SEOKJUN", no:10 }, { name:"JAEWOOK", no:11 },
       { name:"MUNSEUNG", no:9 }, { name:"WONHYUN", no:8 }, { name:"MINGU", no:6 }
@@ -466,12 +507,22 @@
         return `<div class="line"><span style="flex:1">제${c.round}회 · ${medal} ${c.name} ${c.discipline?('· '+c.discipline):''}</span><button class="rm" data-rc="${i}">삭제</button></div>`;
       }).join('');
     $('aClist').querySelectorAll('[data-rc]').forEach(b=> b.onclick=()=>{ state.champions.splice(+b.dataset.rc,1); renderAll(); save(); });
+    // 주크박스 재생목록(삭제)
+    const tl = (state.tracks || DEFAULT.tracks);
+    $('aTlist').innerHTML = tl.map((t,i)=>
+      `<div class="line"><span style="flex:1">🎵 ${t.title}</span><button class="rm" data-rt="${i}">삭제</button></div>`).join('')
+      || '<p class="hint">재생목록이 비어 있습니다.</p>';
+    $('aTlist').querySelectorAll('[data-rt]').forEach(b=> b.onclick=()=>{
+      state.tracks = (state.tracks || DEFAULT.tracks).slice();
+      state.tracks.splice(+b.dataset.rt, 1);
+      renderJukebox(); renderAdmin(); save();
+    });
   }
 
   // 대문 이미지 (업로드본 있으면 그걸로, 없으면 기본 포스터)
   function renderHero(){ $('heroImg').src = state.poster || 'poster.png'; }
 
-  function renderAll(){ renderHero(); renderClock(); renderDefender(); renderScore(); renderPlayers(); renderChamps(); renderAdmin(); }
+  function renderAll(){ renderHero(); renderClock(); renderDefender(); renderScore(); renderPlayers(); renderChamps(); renderAdmin(); renderJukebox(); }
 
   // ---------- 관리자 토글 ----------
   $('adminToggle').onclick = ()=>{
@@ -505,27 +556,93 @@
   };
   $('aPosterReset').onclick = ()=>{ state.poster = null; renderAll(); save(); };
 
-  // ---------- BGM ----------
+  // ---------- 주크박스 ----------
   const bgm = $('bgm'); const bgmBtn = $('bgmBtn');
   bgm.volume = 0.45;
-  let bgmOn = true;
-  function syncBgmBtn(){ bgmBtn.textContent = (bgmOn && !bgm.paused) ? '🔊' : '🔈'; }
-  async function tryPlay(){ try { await bgm.play(); } catch(e) {} syncBgmBtn(); }
-  // 1) 로드 직후 자동재생 시도 (브라우저가 막으면 조용히 실패)
-  tryPlay();
-  // 2) 자동재생 차단 대비: 첫 사용자 상호작용 때 재생
-  function kick(){ if (bgmOn) tryPlay(); window.removeEventListener('pointerdown', kick); window.removeEventListener('keydown', kick); }
+  let trackIdx = 0;          // 현재 곡 인덱스
+  let muted = false;         // 음소거
+  let wantPlay = true;       // 재생 의도(자동재생 차단 대비)
+  let sessionTracks = [];    // 큰 파일 업로드 → 이 기기에서만 임시 재생(공유X)
+
+  function playlist(){
+    const shared = (state.tracks && state.tracks.length) ? state.tracks : [];
+    return shared.concat(sessionTracks);
+  }
+  function renderJukebox(){
+    const list = playlist();
+    if (trackIdx >= list.length) trackIdx = 0;
+    const cur = list[trackIdx];
+    $('jbTitle').textContent = cur ? cur.title : '재생할 곡이 없습니다';
+    const playing = wantPlay && !bgm.paused && !muted;
+    $('jbPlay').textContent = playing ? '⏸' : '▶';
+    $('jukebox').classList.toggle('playing', playing);
+    bgmBtn.textContent = muted ? '🔇' : '🔊';
+  }
+  function loadTrack(i, autoplay){
+    const list = playlist(); if (!list.length) { renderJukebox(); return; }
+    trackIdx = (i + list.length) % list.length;
+    bgm.src = list[trackIdx].src;
+    if (autoplay) tryPlay(); else renderJukebox();
+  }
+  async function tryPlay(){
+    if (muted) { renderJukebox(); return; }
+    try { await bgm.play(); } catch(e) {}
+    renderJukebox();
+  }
+  // 곡 종료 → 다음 곡 자동
+  bgm.addEventListener('ended', () => loadTrack(trackIdx + 1, true));
+  // 컨트롤
+  $('jbPrev').onclick = (e)=>{ e.stopPropagation(); wantPlay = true; loadTrack(trackIdx - 1, true); };
+  $('jbNext').onclick = (e)=>{ e.stopPropagation(); wantPlay = true; loadTrack(trackIdx + 1, true); };
+  $('jbPlay').onclick = (e)=>{ e.stopPropagation();
+    if (bgm.paused) { wantPlay = true; muted = false; tryPlay(); }
+    else { wantPlay = false; bgm.pause(); renderJukebox(); }
+  };
+  bgmBtn.onclick = (e)=>{ e.stopPropagation();
+    muted = !muted; bgm.muted = muted;
+    if (!muted && bgm.paused && wantPlay) tryPlay(); else renderJukebox();
+  };
+  // 자동재생 차단 대비: 첫 상호작용 때 재생
+  function kick(){ if (wantPlay && !muted) tryPlay(); window.removeEventListener('pointerdown', kick); window.removeEventListener('keydown', kick); }
   window.addEventListener('pointerdown', kick);
   window.addEventListener('keydown', kick);
-  // 3) 토글 버튼
-  bgmBtn.onclick = (e) => {
-    e.stopPropagation();
-    bgmOn = !bgmOn;
-    if (bgmOn) tryPlay(); else { bgm.pause(); syncBgmBtn(); }
+
+  // ---------- 관리자: 주크박스 재생목록 ----------
+  $('aTadd').onclick = ()=>{
+    const t = $('aTtitle').value.trim(); const u = $('aTurl').value.trim();
+    if (!t || !u) { alert('곡 제목과 URL을 입력하세요.'); return; }
+    state.tracks = (state.tracks || DEFAULT.tracks).slice();
+    state.tracks.push({ title: t, src: u });
+    $('aTtitle').value=''; $('aTurl').value='';
+    renderJukebox(); renderAdmin(); save();
+  };
+  $('aTupload').onclick = ()=>{
+    const file = $('aTfile').files && $('aTfile').files[0];
+    if (!file) { alert('오디오 파일을 선택하세요.'); return; }
+    const title = $('aTtitle').value.trim() || file.name.replace(/\.[^.]+$/, '');
+    if (file.size <= 700*1024) {
+      // 작은 파일 → dataURL로 전원 공유 저장
+      const reader = new FileReader();
+      reader.onload = ()=>{
+        state.tracks = (state.tracks || DEFAULT.tracks).slice();
+        state.tracks.push({ title, src: reader.result });
+        $('aTtitle').value=''; $('aTfile').value='';
+        renderJukebox(); renderAdmin(); save();
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // 큰 파일 → 이 기기에서만 임시 재생
+      const url = URL.createObjectURL(file);
+      sessionTracks.push({ title: title + ' (이 기기 임시)', src: url });
+      $('aTtitle').value=''; $('aTfile').value='';
+      alert('파일이 커서 이 기기에서만 임시 재생됩니다(새로고침 시 사라짐). 전원 공유하려면 작은 파일이나 URL을 사용하세요.');
+      renderJukebox(); renderAdmin();
+    }
   };
 
   // ---------- 시작 ----------
   renderAll();
+  loadTrack(0, true);   // 첫 곡 로드 + 자동재생 시도(차단 시 첫 상호작용/▶로 재생)
   setInterval(renderClock, 1000);
   initFirebase().catch(e => console.warn('Firebase 미설정/오류 → 로컬 모드', e));
   </script>
