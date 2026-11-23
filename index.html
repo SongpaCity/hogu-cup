@@ -25,9 +25,9 @@
       font-family: "Jua", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
       -webkit-text-size-adjust: 100%;
       background:
-        radial-gradient(circle at 12% 8%, rgba(255,255,255,.9) 0 4px, transparent 5px) 0 0/90px 90px,
-        radial-gradient(circle at 70% 40%, rgba(255,255,255,.7) 0 3px, transparent 4px) 0 0/120px 120px,
-        linear-gradient(180deg, var(--sky1) 0%, var(--sky2) 45%, var(--sky3) 100%) fixed;
+        linear-gradient(180deg, rgba(174,228,255,.25), rgba(233,215,255,.35)),
+        url('assets/bg-ludibrium.png') center top / cover fixed,
+        linear-gradient(180deg, var(--sky1), var(--sky3));
     }
     .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 56px; }
 
@@ -72,7 +72,7 @@
     #defenderBox .dlabel { text-align: center; color: var(--gold2); font-size: .92rem; letter-spacing: .04em; margin-bottom: 6px; }
     #defenderBox .frame { position: relative; }
     #defenderBox .frame img { width: 100%; display: block; filter: drop-shadow(0 8px 18px rgba(120,90,20,.4)); }
-    #defenderBox .name { position: absolute; left: 50%; top: 45%; transform: translate(-50%, -50%); width: 62%; text-align: center; }
+    #defenderBox .name { position: absolute; left: 50%; top: 51%; transform: translate(-50%, -50%); width: 40%; text-align: center; }
     #defenderBox .name .nm { font-size: clamp(1.1rem, 5.5vw, 1.85rem); color: #fff; letter-spacing: .02em; text-shadow: 0 2px 3px #7a4e00, 0 0 12px rgba(255,220,120,.7); line-height: 1.1; }
     #defenderBox .name .disc { font-size: .8rem; color: #fff6dc; margin-top: 3px; font-family: "Gaegu", sans-serif; }
     #defenderBox .name .tbd { color: #fff6e6; }
@@ -102,6 +102,35 @@
     /* 전대회 우승자(디펜딩 챔피언) 금장 슬롯 */
     .score .row.champ { background: linear-gradient(90deg, rgba(244,184,46,.28), rgba(244,184,46,.06)); box-shadow: inset 5px 0 0 var(--gold); }
     .score .row .crown { filter: drop-shadow(0 0 4px rgba(244,184,46,.75)); margin-left: 2px; }
+
+    /* TOP3 시상대(포디움) */
+    #podiumBox { margin: 0 0 14px; }
+    .podium3 { display: flex; align-items: flex-end; justify-content: center; gap: 10px; }
+    .podium3 .col { flex: 1 1 0; max-width: 33%; display: flex; flex-direction: column; align-items: center; }
+    .podium3 .col.empty-col { visibility: hidden; }
+    .podium3 .who { font-size: 1rem; color: var(--ink); text-align: center; line-height: 1.15; margin-bottom: 2px; }
+    .podium3 .who small { color: var(--muted); font-size: .7rem; margin-left: 3px; font-family: "Gaegu", sans-serif; }
+    .podium3 .who .crown { filter: drop-shadow(0 0 4px rgba(244,184,46,.8)); }
+    .podium3 .pt { font-size: 1.5rem; color: var(--gold2); line-height: 1; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+    .podium3 .ctl { display: flex; gap: 5px; margin-bottom: 6px; }
+    .podium3 .ctl button { width: 30px; height: 30px; border-radius: 9px; border: 0; color: #fff; cursor: pointer; font-family: "Jua",sans-serif; box-shadow: inset 0 2px 2px rgba(255,255,255,.4), 0 3px 0 rgba(0,0,0,.18); }
+    .podium3 .ctl button[data-up]{ background: var(--toy-green); }
+    .podium3 .ctl button[data-dn]{ background: var(--toy-red); }
+    .podium3 .ctl button:active { transform: translateY(2px); }
+    /* 받침대 — 순위별 높낮이 다름 */
+    .podium3 .ped { width: 100%; border-radius: 12px 12px 6px 6px; display: grid; place-items: center;
+      background: linear-gradient(180deg, #ffffff, #eef0f6); border: 3px solid #fff;
+      box-shadow: inset 0 3px 4px rgba(255,255,255,.8), 0 6px 0 rgba(120,110,90,.28); }
+    .podium3 .r1 .ped { height: 96px; }
+    .podium3 .r2 .ped { height: 72px; }
+    .podium3 .r3 .ped { height: 54px; }
+    /* 입체 금은동 숫자 */
+    .podium3 .rnum { font-size: 2.9rem; line-height: 1; font-family: "Jua", sans-serif; -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .podium3 .ng { background: linear-gradient(180deg,#fff3b0 10%,#f4c430 45%,#b5841d 90%); text-shadow: 0 2px 1px rgba(120,80,0,.35); }
+    .podium3 .ns { background: linear-gradient(180deg,#ffffff 10%,#cfd6df 45%,#8a94a4 90%); text-shadow: 0 2px 1px rgba(70,80,95,.3); }
+    .podium3 .nb { background: linear-gradient(180deg,#ffd9a8 10%,#cd7f32 45%,#7d4f23 90%); text-shadow: 0 2px 1px rgba(80,45,10,.3); }
+    .podium3 .col.champ .ped { border-color: var(--gold); box-shadow: inset 0 3px 4px rgba(255,255,255,.8), 0 6px 0 var(--gold2), 0 0 14px rgba(244,184,46,.5); }
+    .podium3 .col.champ .who { color: var(--gold2); }
 
     /* 참가자 — 블록 명패 */
     .players { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 12px; }
@@ -158,6 +187,11 @@
         <div class="line"><input type="datetime-local" id="aDate"><button class="act" id="aDateSave">저장</button></div>
       </div>
       <div class="grp">
+        <label>로비 대문 이미지 (업로드 시 전원 공유 · 자동 축소 저장)</label>
+        <div class="line"><input type="file" id="aPoster" accept="image/*"><button class="act" id="aPosterReset">기본값</button></div>
+        <p class="hint">큰 이미지는 자동으로 줄여 저장합니다(가로 최대 1100px).</p>
+      </div>
+      <div class="grp">
         <label>참가자 추가</label>
         <div class="line"><input id="aPname" placeholder="이름" style="width:120px"><input id="aPno" placeholder="번호" style="width:70px" inputmode="numeric"><button class="act" id="aPadd">추가</button></div>
         <div id="aPlist"></div>
@@ -171,7 +205,7 @@
     </div>
 
     <!-- 대문 포스터 -->
-    <div class="hero"><img src="poster.png" alt="제2회 호구컵 포스터" /></div>
+    <div class="hero"><img id="heroImg" src="poster.png" alt="제2회 호구컵 포스터" /></div>
 
     <!-- 카운트다운 -->
     <div class="countdown">
@@ -188,6 +222,7 @@
     <!-- 실시간 스코어보드 -->
     <h2 class="sec">🔥 실시간 스코어보드</h2>
     <div id="defenderBox"></div>
+    <div id="podiumBox"></div>
     <div class="score" id="scoreBox"></div>
 
     <!-- 참가자 명단 -->
@@ -232,6 +267,7 @@
   const DEFAULT = {
     edition: 2,
     eventDate: null,
+    poster: null,
     participants: [
       { name:"SANGYUN", no:7 }, { name:"SEOKJUN", no:10 }, { name:"JAEWOOK", no:11 },
       { name:"MUNSEUNG", no:9 }, { name:"WONHYUN", no:8 }, { name:"MINGU", no:6 }
@@ -322,32 +358,61 @@
       ${podium}`;
   }
 
-  function renderScore(){
-    const champ = prevPodium().champ;
-    const champName = champ ? champ.name : null;
-    const list = state.participants.map(p => ({ name:p.name, no:p.no, score: Number(state.scores?.[p.name]||0) }))
+  // 점수 내림차순 정렬된 참가자 목록
+  function sortedScores(){
+    return state.participants.map(p => ({ name:p.name, no:p.no, score: Number(state.scores?.[p.name]||0) }))
       .sort((a,b)=> b.score-a.score);
-    $('scoreBox').innerHTML = list.map((p,i)=>{
-      const rankCell = i < 3
-        ? `<div class="medal ${i===0?'g':i===1?'s':'b'}">${i+1}</div>`
-        : `<div class="rk">${i+1}</div>`;
-      const isChamp = champName && p.name === champName;
+  }
+  function ctlHtml(name){
+    return isAdmin ? `<div class="ctl"><button data-dn="${name}">−</button><button data-up="${name}">＋</button></div>` : '';
+  }
+  function bindBump(container){
+    if (!isAdmin) return;
+    container.querySelectorAll('[data-up]').forEach(b=> b.onclick=()=>{ bump(b.dataset.up, 1); });
+    container.querySelectorAll('[data-dn]').forEach(b=> b.onclick=()=>{ bump(b.dataset.dn, -1); });
+  }
+
+  // TOP3 시상대(포디움) — 2·1·3 배치, 단 높낮이 다름, 입체 금은동 숫자
+  function renderPodium(){
+    const champ = prevPodium().champ; const champName = champ ? champ.name : null;
+    const list = sortedScores();
+    if (!list.length) { $('podiumBox').innerHTML = ''; return; }
+    const slots = [ {p:list[1], rank:2, cls:'s'}, {p:list[0], rank:1, cls:'g'}, {p:list[2], rank:3, cls:'b'} ];
+    $('podiumBox').innerHTML = `<div class="podium3">` + slots.map(s => {
+      if (!s.p) return `<div class="col r${s.rank} empty-col"></div>`;
+      const isChamp = champName && s.p.name === champName;
+      return `<div class="col r${s.rank} ${isChamp?'champ':''}">
+          <div class="who">${isChamp?'<span class="crown">👑</span> ':''}<span class="who-nm">${s.p.name}</span><small>#${s.p.no}</small></div>
+          <div class="pt">${s.p.score}</div>
+          ${ctlHtml(s.p.name)}
+          <div class="ped n${s.cls}"><span class="rnum">${s.rank}</span></div>
+        </div>`;
+    }).join('') + `</div>`;
+    bindBump($('podiumBox'));
+  }
+
+  // 4등 이하 리스트
+  function renderScore(){
+    const champ = prevPodium().champ; const champName = champ ? champ.name : null;
+    const list = sortedScores();
+    const rest = list.slice(3);
+    if (!rest.length) { $('scoreBox').innerHTML = ''; $('scoreBox').style.display='none'; return; }
+    $('scoreBox').style.display='';
+    $('scoreBox').innerHTML = rest.map((p,idx)=>{
+      const i = idx + 3; const isChamp = champName && p.name === champName;
       return `<div class="row ${isChamp?'champ':''}">
-        ${rankCell}
+        <div class="rk">${i+1}</div>
         <div class="nm">${p.name} <small>#${p.no}</small>${isChamp?' <span class="crown">👑</span>':''}</div>
         <div class="pt">${p.score}</div>
-        ${isAdmin?`<div class="ctl"><button data-dn="${p.name}">−</button><button data-up="${p.name}">＋</button></div>`:''}
+        ${ctlHtml(p.name)}
       </div>`;
-    }).join('') || '<div class="empty">참가자가 없습니다.</div>';
-    if (isAdmin) {
-      $('scoreBox').querySelectorAll('[data-up]').forEach(b=> b.onclick=()=>{ bump(b.dataset.up, 1); });
-      $('scoreBox').querySelectorAll('[data-dn]').forEach(b=> b.onclick=()=>{ bump(b.dataset.dn, -1); });
-    }
+    }).join('');
+    bindBump($('scoreBox'));
   }
   function bump(name, delta){
     state.scores = state.scores || {};
     state.scores[name] = Math.max(0, Number(state.scores[name]||0) + delta);
-    renderScore(); save();
+    renderPodium(); renderScore(); save();
   }
 
   function renderPlayers(){
@@ -383,7 +448,10 @@
     $('aClist').querySelectorAll('[data-rc]').forEach(b=> b.onclick=()=>{ state.champions.splice(+b.dataset.rc,1); renderAll(); save(); });
   }
 
-  function renderAll(){ renderClock(); renderDefender(); renderScore(); renderPlayers(); renderChamps(); renderAdmin(); }
+  // 대문 이미지 (업로드본 있으면 그걸로, 없으면 기본 포스터)
+  function renderHero(){ $('heroImg').src = state.poster || 'poster.png'; }
+
+  function renderAll(){ renderHero(); renderClock(); renderDefender(); renderPodium(); renderScore(); renderPlayers(); renderChamps(); renderAdmin(); }
 
   // ---------- 관리자 토글 ----------
   $('adminToggle').onclick = ()=>{
@@ -395,6 +463,27 @@
   $('aDateSave').onclick = ()=>{ const v=$('aDate').value; state.eventDate = v? v : null; renderAll(); save(); };
   $('aPadd').onclick = ()=>{ const n=$('aPname').value.trim(); const no=$('aPno').value.trim(); if(!n) return; state.participants.push({name:n,no:no||'-'}); $('aPname').value=''; $('aPno').value=''; renderAll(); save(); };
   $('aCadd').onclick = ()=>{ const r=$('aCround').value.trim(); const n=$('aCname').value.trim(); if(!r||!n) return; const rk=parseInt($('aCrank').value.trim(),10); state.champions.push({round:+r,rank:(rk>=1&&rk<=3)?rk:1,name:n,discipline:$('aCdisc').value.trim()}); $('aCround').value=''; $('aCrank').value=''; $('aCname').value=''; $('aCdisc').value=''; renderAll(); save(); };
+
+  // 대문 이미지 업로드 — canvas로 축소(가로 최대 1100px, JPEG 0.82) 후 dataURL 저장
+  $('aPoster').onchange = (e)=>{
+    const file = e.target.files && e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 1100; const scale = Math.min(1, maxW / img.width);
+        const w = Math.round(img.width*scale), h = Math.round(img.height*scale);
+        const cv = document.createElement('canvas'); cv.width=w; cv.height=h;
+        cv.getContext('2d').drawImage(img, 0, 0, w, h);
+        const dataUrl = cv.toDataURL('image/jpeg', 0.82);
+        if (dataUrl.length > 950000) { alert('이미지가 너무 큽니다. 더 작은 이미지를 사용해 주세요.'); return; }
+        state.poster = dataUrl; $('aPoster').value=''; renderAll(); save();
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  };
+  $('aPosterReset').onclick = ()=>{ state.poster = null; renderAll(); save(); };
 
   // ---------- BGM ----------
   const bgm = $('bgm'); const bgmBtn = $('bgmBtn');
