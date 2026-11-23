@@ -242,6 +242,25 @@
     .score .row.name-only .nm { font-size: 1.08rem; }
     .score .row.name-only .crown { filter: drop-shadow(0 0 4px rgba(244,184,46,.8)); }
 
+    /* 좌우 방향키와 콘텐츠가 겹치지 않도록 여백 확보 */
+    @media (max-width: 760px) { .screen-inner { padding-left: 52px; padding-right: 52px; } }
+
+    /* 방명록(댓글) */
+    .cmt-form { display: flex; flex-wrap: wrap; gap: 8px; background: var(--card); border: 3px solid #fff; border-radius: 16px; padding: 12px; box-shadow: 0 5px 0 rgba(120,100,60,.18); margin-bottom: 14px; }
+    .cmt-form input { flex: 0 0 110px; }
+    .cmt-form input, .cmt-form textarea { background: #fffef9; color: var(--ink); border: 2px solid var(--line); border-radius: 10px; padding: 8px 10px; font-family: "Gaegu", sans-serif; font-size: .95rem; }
+    .cmt-form textarea { flex: 1 1 100%; resize: vertical; min-height: 44px; }
+    .cmt-form button.act { flex: 0 0 auto; margin-left: auto; color:#fff; border:0; border-radius:12px; padding:8px 16px; cursor:pointer; font-family:"Jua",sans-serif;
+      background: linear-gradient(180deg,#8ee6a4,var(--toy-green)); box-shadow:0 4px 0 #2f9c52, inset 0 2px 2px rgba(255,255,255,.5); transition: transform .09s ease; }
+    .cmt-form button.act:active { transform: translateY(3px); box-shadow:0 1px 0 #2f9c52, inset 0 2px 2px rgba(255,255,255,.5); }
+    .cmt { background: var(--card); border: 3px solid #fff; border-radius: 14px; padding: 11px 13px; margin-bottom: 9px; box-shadow: 0 4px 0 rgba(120,100,60,.14); animation: revealUp .4s ease both; }
+    .cmt .top { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+    .cmt .who { color: var(--gold2); font-size: .98rem; }
+    .cmt .when { color: var(--muted); font-size: .72rem; font-family: "Gaegu", sans-serif; margin-left: auto; }
+    .cmt .body { color: var(--ink); font-size: .98rem; font-family: "Gaegu", sans-serif; white-space: pre-wrap; word-break: break-word; }
+    .cmt .del { background:#fff; border:2px solid var(--toy-red); color:var(--toy-red); border-radius:8px; padding:2px 8px; font-size:.75rem; cursor:pointer; font-family:"Jua",sans-serif; }
+    .cmt-empty { color: var(--muted); text-align:center; padding: 20px; font-family:"Gaegu",sans-serif; background: rgba(255,255,255,.75); border-radius: 14px; }
+
     /* ================= 모바일 반응형 ================= */
     @media (max-width: 560px) {
       .wrap { padding: 0 12px 48px; }
@@ -350,6 +369,17 @@
     <section class="screen"><div class="screen-inner">
       <h2 class="sec">🏆 회차별 우승자</h2>
       <div id="champsBox"></div>
+    </div></section>
+
+    <!-- ===== 4화면: 방명록(댓글) ===== -->
+    <section class="screen"><div class="screen-inner">
+      <h2 class="sec">💬 방명록</h2>
+      <div class="cmt-form">
+        <input id="cmtName" placeholder="이름" maxlength="12">
+        <textarea id="cmtText" placeholder="한마디 남겨주세요 ✍️" maxlength="200" rows="2"></textarea>
+        <button class="act" id="cmtSend">등록</button>
+      </div>
+      <div id="cmtList"></div>
       <p class="foot">호구컵</p>
     </div></section>
 
@@ -398,6 +428,7 @@
       { title: "Down Town", src: "assets/music/down-town.mp3" },
       { title: "Beachway", src: "assets/music/beachway.mp3" }
     ],
+    comments: [],
     participants: [
       { name:"SANGYUN", no:7 }, { name:"SEOKJUN", no:10 }, { name:"JAEWOOK", no:11 },
       { name:"MUNSEUNG", no:9 }, { name:"WONHYUN", no:8 }, { name:"MINGU", no:6 }
@@ -595,7 +626,40 @@
   // 대문 이미지 (업로드본 있으면 그걸로, 없으면 기본 포스터)
   function renderHero(){ $('heroImg').src = state.poster || 'poster.png'; }
 
-  function renderAll(){ renderHero(); renderClock(); renderDefender(); renderScore(); renderChamps(); renderAdmin(); renderJukebox(); }
+  // ---------- 방명록(댓글) ----------
+  function timeAgo(ts){
+    const s = Math.floor((Date.now() - ts)/1000);
+    if (s < 60) return '방금';
+    if (s < 3600) return Math.floor(s/60) + '분 전';
+    if (s < 86400) return Math.floor(s/3600) + '시간 전';
+    const d = new Date(ts);
+    return `${d.getMonth()+1}.${d.getDate()}`;
+  }
+  function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function renderComments(){
+    const list = (state.comments || []);
+    if (!list.length) { $('cmtList').innerHTML = `<div class="cmt-empty">아직 글이 없어요. 첫 한마디를 남겨보세요! 💬</div>`; return; }
+    $('cmtList').innerHTML = list.map((c,i)=>`
+      <div class="cmt">
+        <div class="top"><span class="who">${esc(c.name)}</span><span class="when">${timeAgo(c.ts)}</span>${isAdmin?`<button class="del" data-dc="${i}">삭제</button>`:''}</div>
+        <div class="body">${esc(c.text)}</div>
+      </div>`).join('');
+    if (isAdmin) $('cmtList').querySelectorAll('[data-dc]').forEach(b=> b.onclick=()=>{
+      state.comments = (state.comments||[]).slice(); state.comments.splice(+b.dataset.dc,1); renderComments(); save();
+    });
+  }
+  $('cmtSend').onclick = ()=>{
+    const name = $('cmtName').value.trim(); const text = $('cmtText').value.trim();
+    if (!name || !text) { alert('이름과 내용을 입력하세요.'); return; }
+    localStorage.setItem('hogucup_nick', name);
+    state.comments = (state.comments || []).slice();
+    state.comments.unshift({ name, text, ts: Date.now() });
+    if (state.comments.length > 200) state.comments.length = 200;   // 과도 누적 방지
+    $('cmtText').value='';
+    renderComments(); save();
+  };
+
+  function renderAll(){ renderHero(); renderClock(); renderDefender(); renderScore(); renderChamps(); renderAdmin(); renderJukebox(); renderComments(); }
 
   // ---------- 관리자 토글 ----------
   $('adminToggle').onclick = ()=>{
@@ -714,7 +778,7 @@
   };
 
   // ---------- 화면 캐러셀 네비게이션 ----------
-  const screensEl = $('screens'); const dotsEl = $('dots'); const SCREEN_COUNT = 3;
+  const screensEl = $('screens'); const dotsEl = $('dots'); const SCREEN_COUNT = 4;
   function currentScreen(){ return Math.round(screensEl.scrollLeft / screensEl.clientWidth); }
   function goTo(i){ i = Math.max(0, Math.min(SCREEN_COUNT-1, i)); screensEl.scrollTo({ left: i*screensEl.clientWidth, behavior: 'smooth' }); }
   dotsEl.innerHTML = Array.from({length:SCREEN_COUNT}, (_,i)=>`<div class="dot" data-i="${i}"></div>`).join('');
@@ -733,6 +797,7 @@
   updateNav();
 
   // ---------- 시작 ----------
+  const savedNick = localStorage.getItem('hogucup_nick'); if (savedNick) $('cmtName').value = savedNick;
   renderAll();
   loadTrack(0, true);   // 첫 곡 로드 + 자동재생 시도(차단 시 첫 상호작용/▶로 재생)
   let lastBefore = isBeforeEvent();
