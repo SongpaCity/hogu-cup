@@ -83,6 +83,16 @@
     #admin .line { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: 4px 0; }
     #admin .hint { color: var(--muted); font-size: .76rem; line-height: 1.5; }
 
+    /* 메이플 UI 에셋 적용 */
+    .adminbtn, #admin button.act, #bgmBtn {
+      background: url('assets/btn-gold.png') no-repeat center / 100% 100% !important;
+      border: 0 !important; color: #2a1d02 !important; font-weight: 800 !important;
+      text-shadow: 0 1px 0 rgba(255,255,255,.4); box-shadow: none;
+    }
+    #bgmBtn { width: 38px; height: 28px; font-size: .95rem; cursor: pointer; padding: 0; }
+    #defenderBox .dlabel .deco-star { width: 14px; height: 14px; vertical-align: -2px; margin: 0 7px; filter: drop-shadow(0 0 5px rgba(255,220,120,.7)); }
+    .score .row .flag { width: 15px; height: 15px; margin-left: 4px; filter: drop-shadow(0 0 4px rgba(255,220,120,.6)); }
+
     .foot { color: #566072; font-size: .76rem; text-align: center; margin-top: 34px; }
   </style>
 </head>
@@ -90,8 +100,10 @@
   <div class="wrap">
     <div class="topbar">
       <span class="mode" id="mode">로컬 모드</span>
+      <button id="bgmBtn" title="BGM 켜기/끄기">🔊</button>
       <button class="adminbtn" id="adminToggle">관리자</button>
     </div>
+    <audio id="bgm" src="assets/bgm.mp3" loop preload="auto" playsinline></audio>
 
     <!-- 관리자 패널 -->
     <div id="admin">
@@ -241,7 +253,7 @@
     const name = prev ? prev.name : '미정';
     const disc = prev && prev.discipline ? prev.discipline : '';
     $('defenderBox').innerHTML = `
-      <div class="dlabel">👑 지난 대회(제 ${prevRound}회) 우승자</div>
+      <div class="dlabel"><img class="deco-star" src="assets/star.png" alt="">👑 지난 대회(제 ${prevRound}회) 우승자<img class="deco-star" src="assets/star.png" alt=""></div>
       <div class="frame">
         <img src="champ-frame.png" alt="디펜딩 챔피언 프레임">
         <div class="name">
@@ -257,7 +269,7 @@
     $('scoreBox').innerHTML = list.map((p,i)=>`
       <div class="row">
         <div class="rk ${i===0?'top':''}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)}</div>
-        <div class="nm">${p.name} <small>#${p.no}</small></div>
+        <div class="nm">${p.name} <small>#${p.no}</small>${i===0?'<img class="flag" src="assets/flag-gold.png" alt="">':''}</div>
         <div class="pt">${p.score}</div>
         ${isAdmin?`<div class="ctl"><button data-dn="${p.name}">−</button><button data-up="${p.name}">＋</button></div>`:''}
       </div>`).join('') || '<div class="empty">참가자가 없습니다.</div>';
@@ -312,6 +324,25 @@
   $('aDateSave').onclick = ()=>{ const v=$('aDate').value; state.eventDate = v? v : null; renderAll(); save(); };
   $('aPadd').onclick = ()=>{ const n=$('aPname').value.trim(); const no=$('aPno').value.trim(); if(!n) return; state.participants.push({name:n,no:no||'-'}); $('aPname').value=''; $('aPno').value=''; renderAll(); save(); };
   $('aCadd').onclick = ()=>{ const r=$('aCround').value.trim(); const n=$('aCname').value.trim(); if(!r||!n) return; state.champions.push({round:+r,name:n,discipline:$('aCdisc').value.trim()}); $('aCround').value=''; $('aCname').value=''; $('aCdisc').value=''; renderAll(); save(); };
+
+  // ---------- BGM ----------
+  const bgm = $('bgm'); const bgmBtn = $('bgmBtn');
+  bgm.volume = 0.45;
+  let bgmOn = true;
+  function syncBgmBtn(){ bgmBtn.textContent = (bgmOn && !bgm.paused) ? '🔊' : '🔈'; }
+  async function tryPlay(){ try { await bgm.play(); } catch(e) {} syncBgmBtn(); }
+  // 1) 로드 직후 자동재생 시도 (브라우저가 막으면 조용히 실패)
+  tryPlay();
+  // 2) 자동재생 차단 대비: 첫 사용자 상호작용 때 재생
+  function kick(){ if (bgmOn) tryPlay(); window.removeEventListener('pointerdown', kick); window.removeEventListener('keydown', kick); }
+  window.addEventListener('pointerdown', kick);
+  window.addEventListener('keydown', kick);
+  // 3) 토글 버튼
+  bgmBtn.onclick = (e) => {
+    e.stopPropagation();
+    bgmOn = !bgmOn;
+    if (bgmOn) tryPlay(); else { bgm.pause(); syncBgmBtn(); }
+  };
 
   // ---------- 시작 ----------
   renderAll();
